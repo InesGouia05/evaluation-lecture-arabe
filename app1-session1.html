@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Séance 1 — Connaissance des lettres</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#faf7f2;--surface:#fff;--border:#ddd0bb;--accent:#8b5e3c;--accent2:#5c8a6b;--text:#2c1f10;--muted:#9c8672;--correct:#3a7d5a;--wrong:#c0392b;--r:14px;--rec:#e74c3c;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.screen{display:none;width:100vw;min-height:100vh;align-items:center;justify-content:center;flex-direction:column;padding:24px;}
+.screen.active{display:flex;}
+
+#screen-setup{background:radial-gradient(ellipse at 60% 30%,#f0e6d6 0%,var(--bg) 70%);}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px 36px;max-width:620px;width:100%;box-shadow:0 8px 32px rgba(100,60,20,.1);}
+.setup-title{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.setup-heading{font-size:16px;font-weight:700;color:var(--text);margin-bottom:20px;line-height:1.4;direction:ltr;}
+.setup-session-tag{display:inline-block;padding:3px 10px;background:var(--accent);color:#fff;border-radius:4px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;direction:ltr;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;margin-bottom:16px;}
+.form-grid .full{grid-column:1/-1;}
+.fl{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.fi{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;outline:none;direction:ltr;}
+.fi:focus{border-color:var(--accent);}
+.toggle{display:flex;gap:8px;}
+.tb{flex:1;padding:8px 6px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.tb.sel{background:var(--accent);border-color:var(--accent);color:#fff;}
+.info-box{margin-top:4px;font-size:10px;color:var(--muted);letter-spacing:.05em;line-height:1.5;}
+.start-btn{width:100%;padding:13px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-top:4px;}
+.start-btn:hover{opacity:.9;}
+.start-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.intro-card{text-align:center;max-width:520px;width:100%;}
+.intro-label{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.intro-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:10px;line-height:1.3;}
+.intro-liste{font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px;}
+.intro-hint{font-size:12px;color:var(--muted);letter-spacing:.08em;opacity:.5;margin-top:24px;}
+
+.abtn{margin-top:40px;padding:14px 48px;background:transparent;border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s;}
+.abtn:hover{background:var(--accent);color:#fff;}
+
+.train-letter{font-family:'Noto Naskh Arabic',serif;font-size:clamp(120px,30vw,280px);font-weight:700;color:var(--text);line-height:1;margin-bottom:32px;}
+.lnf-test-screen{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.test-letter{font-family:'Noto Naskh Arabic',serif;font-size:clamp(100px,28vw,340px);font-weight:700;color:var(--text);line-height:1;user-select:none;opacity:0;animation:fadeUp .3s ease forwards;}
+
+#screen-end{overflow-y:auto;}
+.end-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 32px;max-width:780px;width:100%;box-shadow:0 8px 32px rgba(100,60,20,.1);max-height:92vh;overflow-y:auto;}
+.end-title{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:4px;}
+.end-heading{font-size:20px;font-weight:600;color:var(--text);margin-bottom:16px;}
+.end-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+.es{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.es .v{font-size:14px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;}
+.es .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.sl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin:14px 0 4px;font-weight:600;}
+.dt{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px;}
+.dt th{text-align:left;color:var(--muted);font-weight:400;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--border);}
+.dt td{padding:4px 8px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;}
+.dt tr:last-child td{border-bottom:none;}
+.dt .ar{font-family:'Noto Naskh Arabic',serif;font-size:14px;direction:rtl;}
+.dt .bt td{font-weight:600;}
+.dt .err{color:var(--wrong);font-weight:600;}
+.dlb{width:100%;padding:11px;margin-bottom:7px;background:var(--accent2);border:none;border-radius:8px;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:block;text-align:center;}
+.dlb:hover{opacity:.85;}
+.dlb.hide{display:none;}
+.restart-btn{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
+.restart-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+#overlay{position:fixed;inset:0;background:var(--bg);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s;}
+#overlay.show{opacity:1;pointer-events:all;}
+</style>
+</head>
+<body>
+<div id="overlay"></div>
+
+<!-- SETUP -->
+<div class="screen active" id="screen-setup"><div class="setup-card">
+  <div class="setup-session-tag">Séance 1</div>
+  <div class="setup-title">Connaissance des lettres</div>
+  <div class="setup-heading">Nomination des noms · Nomination des sons</div>
+  <div class="form-grid">
+    <div><label class="fl">Code de l'enfant</label><input class="fi" id="in-code" type="text" placeholder="ex : Élève 03" dir="ltr"></div>
+    <div><label class="fl">Date de naissance</label><div style="display:flex;gap:6px;"><input class="fi" id="in-dob-d" type="text" placeholder="JJ" maxlength="2" style="width:60px;text-align:center;" dir="ltr"><input class="fi" id="in-dob-m" type="text" placeholder="MM" maxlength="2" style="width:60px;text-align:center;" dir="ltr"><input class="fi" id="in-dob-y" type="text" placeholder="AAAA" maxlength="4" style="width:80px;text-align:center;" dir="ltr"></div></div>
+    <div><label class="fl">Niveau scolaire</label><div class="toggle"><button class="tb" id="btn-niv1" onclick="selNiveau('1')">1ère année</button><button class="tb" id="btn-niv2" onclick="selNiveau('2')">2ème année</button></div></div>
+    <div><label class="fl">Genre</label><div class="toggle"><button class="tb" id="btn-genreF" onclick="selGenre('F')">F</button><button class="tb" id="btn-genreM" onclick="selGenre('M')">M</button></div></div>
+    <div class="full"><label class="fl">Groupe de passation</label><div class="toggle" id="tog-grp"><button class="tb" onclick="selGroupe('A')">A</button><button class="tb" onclick="selGroupe('B')">B</button><button class="tb" onclick="selGroupe('C')">C</button><button class="tb" onclick="selGroupe('D')">D</button></div></div>
+    <div><label class="fl">Niveau éducation — Père</label><select class="fi" id="in-edu-pere" onchange="checkReady()"><option value="">— Choisir —</option><option value="Analphabète">Analphabète</option><option value="Primaire">Primaire</option><option value="Secondaire">Secondaire</option><option value="Bac">Bac</option><option value="Etudes Supérieures">Etudes Supérieures</option></select></div>
+    <div><label class="fl">Niveau éducation — Mère</label><select class="fi" id="in-edu-mere" onchange="checkReady()"><option value="">— Choisir —</option><option value="Analphabète">Analphabète</option><option value="Primaire">Primaire</option><option value="Secondaire">Secondaire</option><option value="Bac">Bac</option><option value="Etudes Supérieures">Etudes Supérieures</option></select></div>
+    <div><label class="fl">Liste Noms (Sons = opposée)</label><div class="toggle"><button class="tb sel" id="btn-LA" onclick="selListe('A')">Liste A</button><button class="tb" id="btn-LB" onclick="selListe('B')">Liste B</button></div></div>
+    <div><label class="fl">TrApp (mode test)</label><div class="toggle"><button class="tb" id="btn-trapp" onclick="selTrApp()">Oui</button></div></div>
+    <div class="full"><div id="pass-desc" class="info-box"></div></div>
+    <div class="full" style="font-size:10px;color:var(--muted);background:var(--bg);padding:10px;border-radius:6px;line-height:1.5;">
+      <strong>Pendant le test :</strong> Espace = correct + suivant · Entrée = erreur + suivant · Échap = arrêt anticipé
+    </div>
+  </div>
+  <button class="start-btn" id="btn-start" onclick="launch()" disabled>Lancer la Séance 1 →</button>
+</div></div>
+
+<!-- LNF NOMS -->
+<div class="screen" id="screen-lnf-noms-intro"><div class="intro-card"><div class="intro-label">Connaissance des lettres</div><div class="intro-title">Nomination des noms<br>des lettres</div><div class="intro-liste" id="lnf-noms-liste-tag"></div><div class="intro-hint">⎵ Espace pour continuer</div></div></div>
+<div class="screen" id="screen-lnf-noms-train"><div class="train-letter" id="lnf-noms-train-letter"></div><button class="abtn" id="lnf-noms-train-next" onclick="trainNext('noms')">التالي →</button><button class="abtn" id="lnf-noms-train-go" onclick="lnfStart('noms')" style="display:none;">Commencer le test →</button></div>
+<div class="screen lnf-test-screen" id="screen-lnf-noms-test"><div class="test-letter" id="lnf-noms-letter"></div></div>
+
+<!-- LNF SONS -->
+<div class="screen" id="screen-lnf-sons-intro"><div class="intro-card"><div class="intro-label">Connaissance des lettres</div><div class="intro-title">Nomination des sons<br>des lettres</div><div class="intro-liste" id="lnf-sons-liste-tag"></div><div class="intro-hint">⎵ Espace pour continuer</div></div></div>
+<div class="screen" id="screen-lnf-sons-train"><div class="train-letter" id="lnf-sons-train-letter"></div><button class="abtn" id="lnf-sons-train-next" onclick="trainNext('sons')">التالي →</button><button class="abtn" id="lnf-sons-train-go" onclick="lnfStart('sons')" style="display:none;">Commencer le test →</button></div>
+<div class="screen lnf-test-screen" id="screen-lnf-sons-test"><div class="test-letter" id="lnf-sons-letter"></div></div>
+
+<!-- END -->
+<div class="screen" id="screen-end"><div class="end-card">
+  <div class="end-title">Résultats — Séance 1</div>
+  <div class="end-heading">Séance 1 terminée</div>
+  <div class="end-summary" id="end-summary"></div>
+  <div class="sl">Connaissance — Noms — Détail</div>
+  <table class="dt"><thead><tr><th>#</th><th>Lettre</th><th>Exact</th><th>Temps (s)</th><th>VOT (s)</th></tr></thead><tbody id="lnf-noms-tbody"></tbody></table>
+  <div class="sl">Connaissance — Sons — Détail</div>
+  <table class="dt"><thead><tr><th>#</th><th>Lettre</th><th>Exact</th><th>Temps (s)</th><th>VOT (s)</th></tr></thead><tbody id="lnf-sons-tbody"></tbody></table>
+  <div id="sync-status" style="font-size:12px;text-align:center;margin-bottom:12px;min-height:18px;"></div>
+  <a class="dlb hide" id="dl-lnf-noms" download="">Audio — Connaissance Noms</a>
+  <a class="dlb hide" id="dl-lnf-sons" download="">Audio — Connaissance Sons</a>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin:12px 0;line-height:1.5;">↪︎ Utilisez l'App 2 avec le même code de l'enfant pour la Séance 2<br>(Automaticité + Pseudo-mots)</div>
+  <button class="restart-btn" onclick="fullRestart()">↺ Nouvelle passation</button>
+</div></div>
+
+<script>
+// ═══════════════ DATA ═══════════════
+// Lettres LNF (28 lettres, 2 ordres A/B)
+const LNF_LISTS={
+  A:['ك','ظ','م','ب','ر','ج','ل','ت','ص','و','ح','ن','ث','ز','ع','ا','ض','خ','ي','غ','د','ف','ذ','ش','ه','ق','س','ط'],
+  B:['ن','ج','م','ط','ب','ه','ر','ع','ل','ض','ا','ث','ك','ظ','و','ح','ي','ص','ذ','ش','ف','د','ق','ز','غ','ت','س','خ']
+};
+const ALL_L=['ا','ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه','و','ي'];
+
+// ═══════════════ STATE ═══════════════
+let CFG={code:'',niveau:'',dob:'',groupe:null,genre:null,nomsListe:'A',eduPere:'',eduMere:'',trapp:false};
+function nomsListe(){return CFG.nomsListe;}
+function sonsListe(){return CFG.nomsListe==='A'?'B':'A';}
+function nomsFirst(){return CFG.groupe==='A'||CFG.groupe==='C';}
+
+let LNF={noms:{idx:0,t0:0,times:[],running:false,elapsed:0,interval:null,blob:null,b64:null,mr:null,ch:[],train:[],trainIdx:0},
+         sons:{idx:0,t0:0,times:[],running:false,elapsed:0,interval:null,blob:null,b64:null,mr:null,ch:[],train:[],trainIdx:0}};
+let recMime='audio/webm';
+let flow=[],fIdx=0;
+
+// ═══════════════ AUDIO + VOT ═══════════════
+function pickMime(){const t=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];return t.find(m=>MediaRecorder.isTypeSupported(m))||'';}
+async function micVOT(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return{mr:null};
+  const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+  recMime=pickMime();const mr=new MediaRecorder(s,recMime?{mimeType:recMime}:{});
+  if(!votCtx)votCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(votCtx.state==='suspended')await votCtx.resume();
+  votSource=votCtx.createMediaStreamSource(s);votAnalyser=votCtx.createAnalyser();votAnalyser.fftSize=512;votSource.connect(votAnalyser);
+  return{mr,stream:s};
+}
+function stopMR(mr,ch){return new Promise(res=>{if(!mr||mr.state==='inactive'){res({blob:null,b64:null});return;}mr.onstop=()=>{const blob=new Blob(ch,{type:recMime||'audio/webm'});const rd=new FileReader();rd.onloadend=()=>res({blob,b64:rd.result});rd.readAsDataURL(blob);mr.stream.getTracks().forEach(t=>t.stop());};mr.stop();});}
+
+let votCtx=null,votAnalyser=null,votSource=null;
+let votT0=0,votDetected=null,votActive=false,votRAF=null;
+const VOT_THRESHOLD=20;
+function votStart(){votT0=performance.now();votDetected=null;votActive=false;setTimeout(()=>{votActive=true;votPoll();},150);}
+function votStop(){votActive=false;if(votRAF)cancelAnimationFrame(votRAF);votRAF=null;}
+function votPoll(){if(!votActive||!votAnalyser)return;const buf=new Uint8Array(votAnalyser.fftSize);votAnalyser.getByteTimeDomainData(buf);let mx=0;for(let i=0;i<buf.length;i++){const a=Math.abs(buf[i]-128);if(a>mx)mx=a;}if(mx>VOT_THRESHOLD&&votDetected===null)votDetected=performance.now()-votT0;votRAF=requestAnimationFrame(votPoll);}
+function votGet(){votStop();return votDetected!==null?+(votDetected/1000).toFixed(3):null;}
+
+// ═══════════════ SETUP ═══════════════
+function selNiveau(n){CFG.niveau=n;document.getElementById('btn-niv1').classList.toggle('sel',n==='1');document.getElementById('btn-niv2').classList.toggle('sel',n==='2');checkReady();}
+function selListe(l){CFG.nomsListe=l;document.getElementById('btn-LA').classList.toggle('sel',l==='A');document.getElementById('btn-LB').classList.toggle('sel',l==='B');updateDesc();}
+function selGroupe(g){CFG.groupe=g;document.getElementById('tog-grp').querySelectorAll('.tb').forEach(b=>b.classList.toggle('sel',b.textContent===g));updateDesc();checkReady();}
+function selGenre(g){CFG.genre=g;document.getElementById('btn-genreF').classList.toggle('sel',g==='F');document.getElementById('btn-genreM').classList.toggle('sel',g==='M');checkReady();}
+function selTrApp(){CFG.trapp=!CFG.trapp;document.getElementById('btn-trapp').classList.toggle('sel',CFG.trapp);}
+function updateDesc(){if(!CFG.groupe)return;const nS=nomsFirst()?'Noms → Sons':'Sons → Noms';document.getElementById('pass-desc').textContent=nS+' · Noms=Liste '+CFG.nomsListe+' · Sons=Liste '+sonsListe();}
+['in-code','in-dob-d','in-dob-m','in-dob-y'].forEach(id=>document.getElementById(id).addEventListener('input',checkReady));
+function checkReady(){
+  const d=document.getElementById('in-dob-d').value,m=document.getElementById('in-dob-m').value,y=document.getElementById('in-dob-y').value;
+  const eduP=document.getElementById('in-edu-pere').value,eduM=document.getElementById('in-edu-mere').value;
+  document.getElementById('btn-start').disabled=!(CFG.groupe&&CFG.nomsListe&&CFG.genre&&CFG.niveau&&document.getElementById('in-code').value.trim()&&d&&m&&y.length===4&&eduP&&eduM);
+}
+
+function launch(){
+  CFG.code=document.getElementById('in-code').value.trim();
+  CFG.dob=document.getElementById('in-dob-d').value.padStart(2,'0')+'/'+document.getElementById('in-dob-m').value.padStart(2,'0')+'/'+document.getElementById('in-dob-y').value;
+  CFG.eduPere=document.getElementById('in-edu-pere').value;
+  CFG.eduMere=document.getElementById('in-edu-mere').value;
+  const nL='Liste '+nomsListe(),sL='Liste '+sonsListe();
+  document.getElementById('lnf-noms-liste-tag').textContent=nL;document.getElementById('lnf-sons-liste-tag').textContent=sL;
+  const nf=nomsFirst();
+  flow=nf?['lnf-noms-intro','lnf-noms-train','lnf-sons-intro','lnf-sons-train','end']:['lnf-sons-intro','lnf-sons-train','lnf-noms-intro','lnf-noms-train','end'];
+  fIdx=0;transition(()=>go('screen-'+flow[0]));
+}
+function nextFlow(){fIdx++;if(fIdx>=flow.length){transition(()=>showEnd());return;}const s=flow[fIdx];if(s==='lnf-noms-train'){transition(()=>lnfTrain('noms'));return;}if(s==='lnf-sons-train'){transition(()=>lnfTrain('sons'));return;}if(s==='end'){transition(()=>showEnd());return;}transition(()=>go('screen-'+s));}
+
+// ═══════════════ LNF ═══════════════
+function lnfListe(task){return task==='noms'?nomsListe():sonsListe();}
+function lnfTrain(task){const liste=lnfListe(task);const tSet=new Set(LNF_LISTS[liste]);let pool=ALL_L.filter(l=>!tSet.has(l));if(pool.length<2)pool=ALL_L.slice();for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}const st=LNF[task];st.train=pool.slice(0,2);st.trainIdx=0;document.getElementById('lnf-'+task+'-train-letter').textContent=st.train[0];document.getElementById('lnf-'+task+'-train-next').style.display='';document.getElementById('lnf-'+task+'-train-go').style.display='none';go('screen-lnf-'+task+'-train');}
+function trainNext(task){const st=LNF[task];st.trainIdx++;if(st.trainIdx<st.train.length){document.getElementById('lnf-'+task+'-train-letter').textContent=st.train[st.trainIdx];if(st.trainIdx===st.train.length-1){document.getElementById('lnf-'+task+'-train-next').style.display='none';document.getElementById('lnf-'+task+'-train-go').style.display='';}}}
+
+async function lnfStart(task){const st=LNF[task];st.idx=0;st.times=[];st.elapsed=0;st.running=true;st.blob=null;st.b64=null;try{const r=await micVOT();if(r.mr){st.mr=r.mr;st.ch=[];r.mr.ondataavailable=e=>{if(e.data.size>0)st.ch.push(e.data);};r.mr.start(1000);}}catch(e){}go('screen-lnf-'+task+'-test');lnfShow(task);st.t0=Date.now();st.interval=setInterval(()=>{st.elapsed++;},1000);}
+function lnfShow(task){const st=LNF[task];const letters=LNF_LISTS[lnfListe(task)];const el=document.getElementById('lnf-'+task+'-letter');if(st.idx<letters.length){el.style.animation='none';el.offsetHeight;el.style.animation='fadeUp .3s ease forwards';el.textContent=letters[st.idx];votStart();}else{el.textContent='✓';lnfStop(task);}}
+function lnfAdv(task,exact){const st=LNF[task];if(!st.running)return;const letters=LNF_LISTS[lnfListe(task)],now=Date.now();const vot=votGet();if(st.idx<letters.length)st.times.push({letter:letters[st.idx],timeMs:now-st.t0,vot:vot,ex:exact});st.t0=now;st.idx++;lnfShow(task);}
+async function lnfStop(task){const st=LNF[task];if(!st.running)return;st.running=false;clearInterval(st.interval);const letters=LNF_LISTS[lnfListe(task)];const vot=votGet();if(st.idx<letters.length)st.times.push({letter:letters[st.idx],timeMs:Date.now()-st.t0,vot:vot,ex:1});const r=await stopMR(st.mr,st.ch);st.blob=r.blob;st.b64=r.b64;nextFlow();}
+
+document.getElementById('screen-lnf-noms-test').addEventListener('click',()=>{if(LNF.noms.running)lnfAdv('noms',1);});
+document.getElementById('screen-lnf-sons-test').addEventListener('click',()=>{if(LNF.sons.running)lnfAdv('sons',1);});
+
+// ═══════════════ KEYBOARD ═══════════════
+document.addEventListener('keydown',e=>{const scr=currentScreen();
+  if(scr==='screen-lnf-noms-test'&&e.code==='Space'){e.preventDefault();if(LNF.noms.running)lnfAdv('noms',1);return;}
+  if(scr==='screen-lnf-noms-test'&&e.code==='Enter'){e.preventDefault();if(LNF.noms.running)lnfAdv('noms',0);return;}
+  if(scr==='screen-lnf-sons-test'&&e.code==='Space'){e.preventDefault();if(LNF.sons.running)lnfAdv('sons',1);return;}
+  if(scr==='screen-lnf-sons-test'&&e.code==='Enter'){e.preventDefault();if(LNF.sons.running)lnfAdv('sons',0);return;}
+  if(e.code==='Space'&&scr==='screen-lnf-noms-intro'){e.preventDefault();nextFlow();return;}
+  if(e.code==='Space'&&scr==='screen-lnf-sons-intro'){e.preventDefault();nextFlow();return;}
+  if(e.code==='Space'&&scr==='screen-lnf-noms-train'){e.preventDefault();document.getElementById('lnf-noms-train-go').style.display!=='none'?lnfStart('noms'):trainNext('noms');return;}
+  if(e.code==='Space'&&scr==='screen-lnf-sons-train'){e.preventDefault();document.getElementById('lnf-sons-train-go').style.display!=='none'?lnfStart('sons'):trainNext('sons');return;}
+  if(e.code==='Escape'&&scr==='screen-lnf-noms-test'){e.preventDefault();lnfStop('noms');return;}
+  if(e.code==='Escape'&&scr==='screen-lnf-sons-test'){e.preventDefault();lnfStop('sons');return;}
+});
+
+// ═══════════════ SHEETS ═══════════════
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwZHaVn2XwUeW_8hSercASsSHleL3ZApQ0wu7U4z_tmpZWrTrOGummN5Iz5XSNGakyr0g/exec';
+async function sendToSheet(d){const el=document.getElementById('sync-status');el.textContent='⏳ Envoi…';el.style.color='var(--muted)';try{await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(d)});el.textContent='✅ Données envoyées (Séance 1)';el.style.color='var(--correct)';}catch(e){el.textContent='⚠️ Échec';el.style.color='var(--wrong)';}}
+
+// ═══════════════ END ═══════════════
+function showEnd(){go('screen-end');
+  const lnfNTot=LNF.noms.times.reduce((s,r)=>s+r.timeMs,0)/1000;
+  const lnfSTot=LNF.sons.times.reduce((s,r)=>s+r.timeMs,0)/1000;
+  const lnfNCorr=LNF.noms.times.filter(r=>r.ex===1).length;
+  const lnfSCorr=LNF.sons.times.filter(r=>r.ex===1).length;
+
+  const su=document.getElementById('end-summary');su.innerHTML='';
+  [{v:CFG.code,l:'Enfant'},{v:CFG.niveau+'ère/ème année',l:'Niveau'},{v:CFG.dob,l:'Date naiss.'},
+   {v:CFG.groupe,l:'Groupe'},{v:CFG.genre||'—',l:'Genre'},{v:nomsFirst()?'Noms→Sons':'Sons→Noms',l:'Ordre S1'},
+   {v:CFG.eduPere||'—',l:'Édu. Père'},{v:CFG.eduMere||'—',l:'Édu. Mère'},{v:'—',l:''},
+   {v:'L'+nomsListe(),l:'Noms liste'},{v:'L'+sonsListe(),l:'Sons liste'},{v:'—',l:''},
+   {v:lnfNCorr+'/'+LNF.noms.times.length,l:'Noms corr.'},{v:lnfNTot.toFixed(2),l:'Noms (s)'},
+   {v:lnfSCorr+'/'+LNF.sons.times.length,l:'Sons corr.'},{v:lnfSTot.toFixed(2),l:'Sons (s)'}
+  ].forEach(s=>{const d=document.createElement('div');d.className='es';d.innerHTML='<div class="v">'+s.v+'</div><div class="l">'+s.l+'</div>';su.appendChild(d);});
+
+  // LNF tables
+  ['noms','sons'].forEach(task=>{const tb=document.getElementById('lnf-'+task+'-tbody');tb.innerHTML='';const st=LNF[task];const tot=st.times.reduce((s,r)=>s+r.timeMs,0)/1000;const corr=st.times.filter(r=>r.ex===1).length;
+    st.times.forEach((r,i)=>{let tr=document.createElement('tr');if(r.ex===0)tr.className='err';tr.innerHTML='<td>'+(i+1)+'</td><td class="ar">'+r.letter+'</td><td>'+(r.ex===1?'✓':'✗')+'</td><td>'+(r.timeMs/1000).toFixed(3)+'</td><td>'+(r.vot!==null&&r.vot!==undefined?r.vot.toFixed(3):'—')+'</td>';tb.appendChild(tr);});
+    let lt=document.createElement('tr');lt.className='bt';lt.innerHTML='<td></td><td>Total</td><td>'+corr+'/'+st.times.length+'</td><td>'+tot.toFixed(2)+'</td><td></td>';tb.appendChild(lt);});
+
+  // Audio download links
+  const ext=recMime.includes('mp4')?'mp4':recMime.includes('ogg')?'ogg':'webm';
+  dlSet('dl-lnf-noms',LNF.noms.blob,CFG.code+'_S1_Noms.'+ext);
+  dlSet('dl-lnf-sons',LNF.sons.blob,CFG.code+'_S1_Sons.'+ext);
+
+  // Sheet payload (session 1)
+  const sd={
+    session:1,
+    enfant:CFG.code,
+    niveau:CFG.niveau,
+    dob:CFG.dob,
+    groupe:CFG.groupe,
+    genre:CFG.genre||'',
+    edu_pere:CFG.eduPere||'',
+    edu_mere:CFG.eduMere||'',
+    s1_noms_liste:nomsListe(),
+    s1_sons_liste:sonsListe(),
+    s1_ordre:nomsFirst()?'Noms→Sons':'Sons→Noms'
+  };
+  ['noms','sons'].forEach(task=>{
+    LNF[task].times.forEach((r,i)=>{const n=i+1;sd['s1_'+task+'_l'+n]=(r.timeMs/1000).toFixed(3);sd['s1_'+task+'_l'+n+'_vot']=r.vot!==null&&r.vot!==undefined?r.vot.toFixed(3):'';sd['s1_'+task+'_l'+n+'_ex']=r.ex;});
+    sd['s1_'+task+'_lues']=LNF[task].times.length;
+    sd['s1_'+task+'_total']=(LNF[task].times.reduce((s,r)=>s+r.timeMs,0)/1000).toFixed(2);
+    sd['s1_'+task+'_correct']=LNF[task].times.filter(r=>r.ex===1).length;
+  });
+  if(LNF.noms.b64)sd.enregistrement_s1_noms=LNF.noms.b64;
+  if(LNF.sons.b64)sd.enregistrement_s1_sons=LNF.sons.b64;
+
+  if(CFG.trapp){const el=document.getElementById('sync-status');el.textContent='⚠️ Mode TrApp — données non envoyées';el.style.color='var(--muted)';}else{sendToSheet(sd);}
+}
+
+function dlSet(id,blob,name){const el=document.getElementById(id);if(blob){el.href=URL.createObjectURL(blob);el.download=name;el.classList.remove('hide');}else el.classList.add('hide');}
+
+function fullRestart(){
+  CFG={code:'',niveau:'',dob:'',groupe:null,genre:null,nomsListe:'A',eduPere:'',eduMere:'',trapp:false};
+  LNF={noms:{idx:0,t0:0,times:[],running:false,elapsed:0,interval:null,blob:null,b64:null,mr:null,ch:[],train:[],trainIdx:0},
+       sons:{idx:0,t0:0,times:[],running:false,elapsed:0,interval:null,blob:null,b64:null,mr:null,ch:[],train:[],trainIdx:0}};
+  flow=[];fIdx=0;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('btn-LA').classList.add('sel');
+  document.getElementById('in-code').value='';
+  document.getElementById('in-dob-d').value='';document.getElementById('in-dob-m').value='';document.getElementById('in-dob-y').value='';
+  document.getElementById('in-edu-pere').value='';document.getElementById('in-edu-mere').value='';
+  document.getElementById('btn-start').disabled=true;
+  document.getElementById('pass-desc').textContent='';
+  ['dl-lnf-noms','dl-lnf-sons'].forEach(id=>document.getElementById(id).classList.add('hide'));
+  transition(()=>go('screen-setup'));
+}
+
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function currentScreen(){const s=document.querySelector('.screen.active');return s?s.id:null;}
+function transition(cb){const ov=document.getElementById('overlay');ov.classList.add('show');setTimeout(()=>{cb();setTimeout(()=>ov.classList.remove('show'),150);},300);}
+</script>
+</body>
+</html>
